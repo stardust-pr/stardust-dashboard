@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📊 スターダストプレス 進捗ダッシュボード</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: #F5EFE6;
+      color: #2C1A0E;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #3D1C06, #5C2E0E);
+      padding: 18px 30px;
+      border-bottom: 4px solid #C9A87C;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      color: #FAF0DC;
+      letter-spacing: 0.04em;
+    }
+
+    header .updated {
+      font-size: 0.78rem;
+      color: #C9A87C;
+    }
+
+    .tab-bar {
+      background: #4E2A0D;
+      display: flex;
+      gap: 0;
+      border-bottom: 3px solid #C9A87C;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .tab-btn {
+      padding: 12px 28px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: bold;
+      background: transparent;
+      color: #C9A87C;
+      border-right: 1px solid #5C3317;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      background: rgba(201, 168, 124, 0.15);
+    }
+
+    .tab-btn.active {
+      background: #F5EFE6;
+      color: #3D1C06;
+      border-bottom: 3px solid #F5EFE6;
+      margin-bottom: -3px;
+    }
+
+    .controls {
+      background: #EDE4D6;
+      padding: 12px 30px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      border-bottom: 1px solid #C9A87C;
+      position: sticky;
+      top: 48px;
+      z-index: 100;
+    }
+
+    input[type="text"] {
+      padding: 7px 14px;
+      border-radius: 20px;
+      border: 1px solid #C9A87C;
+      background: #fff;
+      color: #2C1A0E;
+      width: 220px;
+      font-size: 0.86rem;
+    }
+
+    input[type="text"]::placeholder {
+      color: #A08060;
+    }
+
+    .filter-btn {
+      padding: 5px 12px;
+      border-radius: 14px;
+      border: 1px solid #C9A87C;
+      background: #fff;
+      color: #5C3317;
+      cursor: pointer;
+      font-size: 0.76rem;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: #5C2E0E;
+      border-color: #5C2E0E;
+      color: #FAF0DC;
+    }
+
+    .filter-btn.warn.active,
+    .filter-btn.warn:hover {
+      background: #8A1A1A;
+      border-color: #8A1A1A;
+      color: #fff;
+    }
+
+    .sep {
+      color: #C9A87C;
+      font-size: 0.8rem;
+      padding: 0 2px;
+    }
+
+    .stats {
+      margin-left: auto;
+      font-size: 0.78rem;
+      color: #7A5C40;
+      white-space: nowrap;
+    }
+
+    .stats span {
+      color: #3D1C06;
+      font-weight: bold;
+    }
+
+    .main {
+      padding: 18px 30px;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .section-header {
+      padding: 9px 16px;
+      margin: 20px 0 8px;
+      background: #EDE4D6;
+      border-left: 5px solid #5C2E0E;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #3D1C06;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 6px;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    th {
+      background: #5C2E0E;
+      padding: 8px 10px;
+      text-align: left;
+      font-size: 0.76rem;
+      color: #E8C99A;
+      font-weight: normal;
+    }
+
+    td {
+      padding: 10px 10px;
+      border-bottom: 1px solid #F0E6D8;
+      font-size: 0.83rem;
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #FBF6EF;
+    }
+
+    tr.stale td {
+      background: #FFF5F5;
+    }
+
+    tr.stale:hover td {
+      background: #FFE8E8;
+    }
+
+    .num {
+      width: 32px;
+      color: #C9A87C;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .pname {
+      min-width: 160px;
+      font-weight: bold;
+      color: #3D1C06;
+    }
+
+    .folder {
+      font-size: 0.7rem;
+      color: #A08060;
+      margin-top: 2px;
+      font-family: monospace;
+    }
+
+    .desc {
+      color: #5C4030;
+      max-width: 280px;
+      font-size: 0.82rem;
+    }
+
+    .action {
+      color: #3E6B2A;
+      font-size: 0.8rem;
+    }
+
+    .owner {
+      color: #7A4020;
+      font-size: 0.76rem;
+      white-space: nowrap;
+    }
+
+    .status-cell {
+      white-space: nowrap;
+    }
+
+    .last-update {
+      font-size: 0.68rem;
+      color: #A08060;
+      margin-top: 4px;
+    }
+
+    .last-update.stale {
+      color: #C41A1A;
+      font-weight: bold;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      white-space: nowrap;
+      font-weight: bold;
+    }
+
+    .s-done {
+      background: #E8F5E0;
+      color: #3E6B2A;
+      border: 1px solid #9CC97A;
+    }
+
+    .s-wip {
+      background: #E0F0FA;
+      color: #1A5A8A;
+      border: 1px solid #7ABCDF;
+    }
+
+    .s-wait {
+      background: #FFF3DC;
+      color: #8A5A00;
+      border: 1px solid #DFB96A;
+    }
+
+    .s-ready {
+      background: #F0E8FA;
+      color: #5A2A8A;
+      border: 1px solid #B07ADF;
+    }
+
+    .s-running {
+      background: #E0FAF0;
+      color: #1A7A5A;
+      border: 1px solid #6ADFB0;
+    }
+
+    .s-caution {
+      background: #FAE0E0;
+      color: #8A1A1A;
+      border: 1px solid #DF7A7A;
+    }
+
+    .links {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid;
+      transition: all 0.15s;
+    }
+
+    .link-html {
+      background: #FFF3E0;
+      color: #B05000;
+      border-color: #DFAA6A;
+    }
+
+    .link-html:hover {
+      background: #B05000;
+      color: #fff;
+    }
+
+    .link-sheet {
+      background: #E8F5E0;
+      color: #2A6A2A;
+      border-color: #8ACA6A;
+    }
+
+    .link-sheet:hover {
+      background: #2A6A2A;
+      color: #fff;
+    }
+
+    .link-gas {
+      background: #E0EEFA;
+      color: #1A4A8A;
+      border-color: #7AACDF;
+    }
+
+    .link-gas:hover {
+      background: #1A4A8A;
+      color: #fff;
+    }
+
+    .link-folder {
+      background: #F5EFE6;
+      color: #5C3317;
+      border: 1px dashed #C9A87C;
+      font-size: 0.7rem;
+      padding: 2px 7px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: monospace;
+    }
+
+    .link-folder:hover {
+      background: #5C2E0E;
+      color: #FAF0DC;
+      text-decoration: none !important;
+    }
+
+    .copy-msg {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #3D1C06;
+      color: #FAF0DC;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .copy-msg.show {
+      opacity: 1;
+    }
+
+    .sched-table td:first-child {
+      font-weight: bold;
+      color: #5C2E0E;
+      white-space: nowrap;
+      min-width: 110px;
+    }
+
+    .s-todo {
+      background: #FAE8E0;
+      color: #8A2A1A;
+      border: 1px solid #DF8A7A;
+    }
+
+    .s-annual {
+      background: #F0F0E0;
+      color: #5A5A1A;
+      border: 1px solid #DFDF7A;
+    }
+
+    .s-started {
+      background: #E8F5E0;
+      color: #3E6B2A;
+      border: 1px solid #9CC97A;
+    }
+
+    .s-plan {
+      background: #E8E0FA;
+      color: #3A1A7A;
+      border: 1px solid #9A7ADF;
+    }
+
+    .s-alert {
+      background: #FAE0E0;
+      color: #8A1A1A;
+      border: 1px solid #DF7A7A;
+    }
+
+    .pri-high {
+      color: #C41A1A;
+      font-weight: bold;
+    }
+
+    .pri-mid {
+      color: #B07A00;
+      font-weight: bold;
+    }
+
+    .pri-low {
+      color: #3E6B2A;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    footer {
+      text-align: center;
+      padding: 18px;
+      color: #A08060;
+      font-size: 0.73rem;
+      border-top: 1px solid #C9A87C;
+      margin-top: 24px;
+    }
+
+    /* ===== 完成品一覧カード ===== */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(93, 46, 14, 0.15);
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, #5C2E0E, #8B4513);
+      padding: 14px 16px;
+    }
+
+    .card-header h3 {
+      color: #FAF0DC;
+      font-size: 0.95rem;
+      margin-bottom: 3px;
+    }
+
+    .card-header .card-type {
+      font-size: 0.7rem;
+      color: #C9A87C;
+    }
+
+    .card-body {
+      padding: 12px 16px;
+    }
+
+    .card-body .desc {
+      font-size: 0.8rem;
+      color: #5C4030;
+      margin-bottom: 10px;
+      line-height: 1.5;
+      min-height: 48px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .card-date {
+      font-size: 0.68rem;
+      color: #A08060;
+      margin-top: 8px;
+    }
+
+    .cat-header {
+      padding: 8px 14px;
+      margin: 20px 0 10px;
+      background: #EDE4D6;
+      border-left: 5px solid #C9A87C;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.88rem;
+      font-weight: bold;
+      color: #3D1C06;
+    }
+
+    .price-box {
+      margin: 8px 0 4px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .price-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: #E8F5E0;
+      color: #2A6A2A;
+      border: 1px solid #8ACA6A;
+      border-radius: 14px;
+      padding: 3px 10px;
+      font-size: 0.78rem;
+      font-weight: bold;
+    }
+
+    .price-monthly {
+      display: inline-flex;
+      align-items: center;
+      background: #E0F0FA;
+      color: #1A5A8A;
+      border: 1px solid #7ABCDF;
+      border-radius: 14px;
+      padding: 3px 10px;
+      font-size: 0.75rem;
+    }
+
+    .price-portfolio {
+      display: inline-flex;
+      align-items: center;
+      background: #F0F0F0;
+      color: #888;
+      border: 1px solid #CCC;
+      border-radius: 14px;
+      padding: 3px 10px;
+      font-size: 0.75rem;
+    }
+
+    .price-custom {
+      display: inline-flex;
+      align-items: center;
+      background: #FFF3DC;
+      color: #8A5A00;
+      border: 1px solid #DFB96A;
+      border-radius: 14px;
+      padding: 3px 10px;
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>🌟 スターダストプレス 進捗ダッシュボード</h1>
+    <div class="updated">最終更新：2026-03-22 ／ グラちゃん管理</div>
+  </header>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('projects',this)">📁 プロジェクト一覧</button>
+    <button class="tab-btn" onclick="switchTab('schedule',this)">📅 重要スケジュール</button>
+    <button class="tab-btn" onclick="switchTab('todo',this)">💡 3ヶ月以内にやること</button>
+    <button class="tab-btn" onclick="switchTab('gallery',this)">🏆 完成品一覧</button>
+  </div>
+
+  <!-- ===== TAB 1: プロジェクト一覧 ===== -->
+  <div id="tab-projects" class="tab-panel active">
+    <div class="controls">
+      <input type="text" id="search" placeholder="🔍 名前・キーワード・日付で検索..." oninput="doFilter()">
+      <span class="sep">|</span>
+      <button class="filter-btn active" onclick="setFilter('all',this)">すべて</button>
+      <button class="filter-btn" onclick="setFilter('s-running',this)">🚀 稼働中</button>
+      <button class="filter-btn" onclick="setFilter('s-wip',this)">🔄 進行中</button>
+      <button class="filter-btn" onclick="setFilter('s-wait',this)">⏸️ 待機中</button>
+      <button class="filter-btn" onclick="setFilter('s-ready',this)">🔧 設計確定</button>
+      <button class="filter-btn" onclick="setFilter('s-done',this)">✅ 完了</button>
+      <span class="sep">|</span>
+      <button class="filter-btn warn" onclick="setFilter('stale7',this)">⚠️ 7日放置</button>
+      <button class="filter-btn warn" onclick="setFilter('stale14',this)">🔴 14日放置</button>
+      <div class="stats">表示中 <span id="count">-</span> 件</div>
+    </div>
+    <div class="main">
+
+      <!-- 統帥院 -->
+      <div class="section-header">⚔️ 統帥院（Zatsudan/）</div>
+      <table>
+        <thead>
+          <tr>
+            <th class="num">#</th>
+            <th>プロジェクト名</th>
+            <th>概要</th>
+            <th>ステータス／更新日</th>
+            <th>次のアクション</th>
+            <th>担当</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr data-status="s-running" data-date="2026-03-18" data-text="ロビー 統帥院 zatsudan 総帥">
+            <td class="num">1</td>
+            <td class="pname">ロビー整備<div class="folder">Zatsudan/</div>
+              <div class="links"><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Zatsudan')">📂 フォルダ</span>
+              </div>
+            </td>
+            <td class="desc">グラちゃん組織の司令塔。全プロジェクト把握・壁打ち・CLAUDE.md管理。プロファイル・ダッシュボード整備。</td>
+            <td class="status-cell"><span class="badge s-running">🚀 常時稼働</span>
+              <div class="last-update">更新: 03-18</div>
+            </td>
+            <td class="action">進捗ダッシュボード定着・プロファイル随時更新</td>
+            <td class="owner">ロビーグラちゃん</td>
+          </tr>
+
+          <tr data-status="s-wip" data-date="2026-03-17" data-text="note 発信 ai記事 前編 後編">
+            <td class="num">2</td>
+            <td class="pname">note発信<div class="folder">Zatsudan/note下書き/</div>
+              <div class="links"><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Zatsudan\\note下書き')">📂
+                  フォルダ</span></div>
+            </td>
+            <td class="desc">グラ版下書き→ラララが書き直し→rararara_Clone学習データ化。<br>📝
+              <b>下書き7記事完成（9ファイル）</b><br>①音声入力って老人が使うもんだと思ってた話<br>②AIって結局なんなん（note版＋原稿）<br>③うんこ製造機が世界を救う（note版＋原稿）<br>④総帥と元帥の話<br>⑤ナノバナナと総帥の話<br>⑥AIに支配される未来_オチはもう来てた<br>⑦AIに人格はない_だから最強のツールなんだ
+            </td>
+            <td class="status-cell"><span class="badge s-wip">🔄 進行中</span>
+              <div class="last-update">更新: 03-17</div>
+            </td>
+            <td class="action">ラララがnote記事（7記事）を書き直して投稿判断</td>
+            <td class="owner">ロビーグラちゃん</td>
+          </tr>
+
+          <tr data-status="s-wait" data-date="2026-03-15" data-text="llmo パチンコ ai集客 フェイス橿原 奥さん">
+            <td class="num">3</td>
+            <td class="pname">LLMO事業<div class="folder">Zatsudan/LLMO/</div>
+              <div class="links"><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Zatsudan\\LLMO')">📂
+                  フォルダ</span></div>
+            </td>
+            <td class="desc">パチンコ業界向けLLMO（AI集客最適化）コンサル。「AIに選ばれる店を作る」ミッション。初回：フェイス860橿原。</td>
+            <td class="status-cell"><span class="badge s-wait">⏸️ 待機中</span>
+              <div class="last-update">更新: 03-15</div>
+            </td>
+            <td class="action">奥さんスクショ収集待ち → フェイス860提案書作成</td>
+            <td class="owner">LLMO卿</td>
+          </tr>
+
+          <tr data-status="s-done" data-date="2026-03-22" data-text="mac マニュアル macbook air m5 操作 設定 ショートカット アクセサリー チェック">
+            <td class="num">4</td>
+            <td class="pname">Macマニュアル<div class="folder">Zatsudan/Macマニュアル/</div>
+              <div class="links">
+                <a class="link-btn link-html" href="Macマニュアル/index.html" target="_blank">🍎 マニュアルを開く</a>
+                <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Zatsudan\\Macマニュアル')">📂 フォルダ</span>
+              </div>
+            </td>
+            <td class="desc">MacBook Air M5セットアップ用パーソナルマニュアル。操作・設定・ショートカット<b>98項目</b>（YouTubeタイムスタンプリンク付き）＋おすすめアクセサリー10選。チェックで習得管理・localStorage永続保存。03-22に小技動画から32項目追加。</td>
+            <td class="status-cell"><span class="badge s-done">✅ 完成</span>
+              <div class="last-update">更新: 03-22</div>
+            </td>
+            <td class="action">MacBook Airセットアップ時に活用・局昇格候補（マニュアル販売が見込める時）</td>
+            <td class="owner">ロビーグラちゃん</td>
+          </tr>
+
+        </tbody>
+      </table>
+
+      <!-- 秘書院 -->
+      <div class="section-header">📜 秘書院</div>
+      <table>
+        <thead>
+          <tr>
+            <th class="num">#</th>
+            <th>プロジェクト名</th>
+            <th>概要</th>
+            <th>ステータス／更新日</th>
+            <th>次のアクション</th>
+            <th>担当</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr data-status="s-ready" data-date="2026-03-12" data-text="tb 引継 handover google sites docs">
+            <td class="num">4</td>
+            <td class="pname">TB引き継ぎ書<div class="folder">TB_Handover/</div>
+              <div class="links"><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\TB_Handover')">📂
+                  フォルダ</span></div>
+            </td>
+            <td class="desc">2026年9月末TB契約終了向けの引き継ぎ資料。Google Sites+Docs+PDF。5月完成・7月末引継・9月末終了。</td>
+            <td class="status-cell"><span class="badge s-wip">🔄 進行中</span>
+              <div class="last-update">更新: 03-21</div>
+            </td>
+            <td class="action">GA4月次レポート自動化 着手済み → 動作確認・GWSマニュアル作成へ</td>
+            <td class="owner">承継局長</td>
+          </tr>
+
+          <tr data-status="s-done" data-date="2026-03-08" data-text="rararara clone メール 文体 生成">
+            <td class="num">5</td>
+            <td class="pname">メールジェネレーター<div class="folder">rararara_Clone/</div>
+              <div class="links"><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\rararara_Clone')">📂
+                  フォルダ</span></div>
+            </td>
+            <td class="desc">ラララちゃんの文体・口調を学習したパーソナルメール生成システム。Phase1：Gmail文体分析完了。</td>
+            <td class="status-cell"><span class="badge s-done">✅ 完了</span>
+              <div class="last-update">更新: 03-08</div>
+            </td>
+            <td class="action">ラララが実運用テスト → note書き直しで学習データ化</td>
+            <td class="owner">文書局長</td>
+          </tr>
+
+          <tr data-status="s-done" data-date="2026-03-17" data-text="天下統一 ロケーション 地図 leaflet json 千葉">
+            <td class="num">6</td>
+            <td class="pname">天下統一ログ<div class="folder">秘書院/HTML発信局/天下統一ログ/</div>
+              <div class="links"><a class="link-btn link-html" href="../秘書院/HTML発信局/天下統一ログ/天下統一ログ.html"
+                  target="_blank">🗾 ツールを開く</a><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\秘書院\\HTML発信局\\天下統一ログ')">📂
+                  フォルダ</span></div>
+            </td>
+            <td class="desc">Googleロケーション履歴JSONを可視化。グリッド制覇・都道府県制覇・ヒートマップ3モード。JSONはGoogleマップアプリからドロップして使用。</td>
+            <td class="status-cell"><span class="badge s-done">✅ 完成</span>
+              <div class="last-update">更新: 03-17</div>
+            </td>
+            <td class="action">JSON入手済み・動作確認済み</td>
+            <td class="owner">HTML発信局長</td>
+          </tr>
+
+          <tr data-status="s-done" data-date="2026-03-17" data-text="unko うんこ 都道府県 analytics">
+            <td class="num">7</td>
+            <td class="pname">UNKO ANALYTICS<div class="folder">秘書院/HTML発信局/UNKO_ANALYTICS/</div>
+              <div class="links"><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\秘書院\\HTML発信局\\UNKO_ANALYTICS')">📂
+                  フォルダ</span></div>
+            </td>
+            <td class="desc">47都道府県×食文化補正のうんこ総量計算。ランダム比較ボタン（東京タワー・クッパ等）HTML単体。東京ドームは段階別コメント方式。</td>
+            <td class="status-cell"><span class="badge s-done">✅ 完成</span>
+              <div class="last-update">更新: 03-17</div>
+            </td>
+            <td class="action">公開するか判断（Netlify等）</td>
+            <td class="owner">うんこ局長</td>
+          </tr>
+
+          <tr data-status="s-wip" data-date="2026-03-18" data-text="かいもんひろば カレンダー シナリオ 比較">
+            <td class="num">8</td>
+            <td class="pname">かいもんひろばカレンダー<div class="folder">秘書院/HTML発信局/かいもんひろば_カレンダー/</div>
+              <div class="links"><a class="link-btn link-html" href="../秘書院/HTML発信局/かいもんひろば_カレンダー/かいもんひろば_カレンダー.html"
+                  target="_blank">📆 ツールを開く</a><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\秘書院\\HTML発信局\\かいもんひろば_カレンダー')">📂
+                  フォルダ</span><span class="link-folder" onclick="copyPath('G:\\マイドライブ\\かいもんひろば\\イベントカレンダー｜ベガスガス大東')">☁️
+                  JSON格納先</span></div>
+            </td>
+            <td class="desc">かいもんひろばイベントのスケジュール・売上シミュレーション。シナリオ保存・比較表・ドラッグ並び替え機能。</td>
+            <td class="status-cell"><span class="badge s-wip">🔄 改良中</span>
+              <div class="last-update">更新: 03-18</div>
+            </td>
+            <td class="action">局長スレッドで改良進行中</td>
+            <td class="owner">HTML発信局長</td>
+          </tr>
+
+          <tr data-status="s-done" data-date="2026-03-15" data-text="イベント確認書 netlify html 店舗">
+            <td class="num">9</td>
+            <td class="pname">イベント確認書<div class="folder">秘書院/HTML発信局/イベント確認書/</div>
+              <div class="links"><a class="link-btn link-html" href="https://soft-caramel-cd02b2.netlify.app"
+                  target="_blank">🌐 公開URL</a><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\秘書院\\HTML発信局\\イベント確認書')">📂
+                  フォルダ</span></div>
+            </td>
+            <td class="desc">店舗向けイベント確認書HTML。Netlify公開済み。折りたたみ・チェックリスト・画像埋め込み対応。</td>
+            <td class="status-cell"><span class="badge s-done">✅ 完成</span>
+              <div class="last-update">更新: 03-15</div>
+            </td>
+            <td class="action">soft-caramel-cd02b2.netlify.app</td>
+            <td class="owner">HTML発信局長</td>
+          </tr>
+
+          <tr data-status="s-done" data-date="2026-03-15" data-text="voice 音声入力 web speech chrome">
+            <td class="num">10</td>
+            <td class="pname">Voice（音声入力ツール）<div class="folder">Voice/</div>
+              <div class="links"><a class="link-btn link-html" href="http://localhost:8765/voice.html"
+                  target="_blank">🎤 起動後に開く</a><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Voice\\音声入力_起動.bat')">📋
+                  .bat起動</span><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Voice')">📂 フォルダ</span>
+              </div>
+            </td>
+            <td class="desc">Chrome用カスタム音声入力ツール。Pythonローカルサーバー経由でマイク許可を永続化。定型文クリック挿入。</td>
+            <td class="status-cell"><span class="badge s-done">✅ 完成</span>
+              <div class="last-update">更新: 03-15</div>
+            </td>
+            <td class="action">音声入力_起動.batをダブルクリックして起動</td>
+            <td class="owner">文書局長</td>
+          </tr>
+
+          <tr data-status="s-ready" data-date="2026-03-20" data-text="gmail 容量 google drive backup 秘書院 容量爆弾 storage">
+            <td class="num">23</td>
+            <td class="pname">容量爆弾解体局<div class="folder">秘書院/容量爆弾解体局/</div>
+              <div class="links"><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\秘書院\\容量爆弾解体局')">📂 フォルダ</span></div>
+            </td>
+            <td class="desc">個人Gmail 81GB爆弾を解体。GASで添付ファイルを会社Driveに移行→メルマガ一括削除→AI Pro解約→月380円プランへ。年31,200円節約。サービス化予定。</td>
+            <td class="status-cell"><span class="badge s-ready">🔧 設計中</span>
+              <div class="last-update">更新: 03-20</div>
+            </td>
+            <td class="action">GAS実装（Gmail API + Drive API）→ 添付ファイル自動移行スクリプト作成</td>
+            <td class="owner">秘書院局長</td>
+          </tr>
+
+          <tr data-status="s-ready" data-date="2026-03-21" data-text="notion 検索 整理 バッチ 画像圧縮 API 秘書院 救急病棟 コスト削減">
+            <td class="num">24</td>
+            <td class="pname">Notion救急病棟<div class="folder">秘書院/Notion救急病棟/</div>
+              <div class="links"><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\秘書院\\Notion救急病棟')">📂 フォルダ</span></div>
+            </td>
+            <td class="desc">Notion検索・整理・コスト問題を解決。API経由でバッチ整形（日付・タグ・年度別整理）・画像圧縮。プラスプラン月2,000円→無料化目標。年24,000円節約。</td>
+            <td class="status-cell"><span class="badge s-ready">🔧 設計中</span>
+              <div class="last-update">更新: 03-21</div>
+            </td>
+            <td class="action">Notion APIトークン取得（ラララ作業）→ 全ページ分析</td>
+            <td class="owner">秘書院局長</td>
+          </tr>
+
+        </tbody>
+      </table>
+
+      <!-- 大蔵院 -->
+      <div class="section-header">💰 大蔵院</div>
+      <table>
+        <thead>
+          <tr>
+            <th class="num">#</th>
+            <th>プロジェクト名</th>
+            <th>概要</th>
+            <th>ステータス／更新日</th>
+            <th>次のアクション</th>
+            <th>担当</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr data-status="s-running" data-date="2026-03-11" data-text="mf mf2 マネーフォワード 売上 経費 管理表">
+            <td class="num">11</td>
+            <td class="pname">MF/MF2 売上管理<div class="folder">MF/ / MF2/</div>
+              <div class="links"><a class="link-btn link-sheet"
+                  href="https://docs.google.com/spreadsheets/d/1stZZ1XUZl2eg_-kzm3_WUjhvVnU7HvISBBwT0GJkFZo/edit?gid=1099615191#gid=1099615191"
+                  target="_blank">📊 売上管理表</a><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\MF2')">📂 MF2</span></div>
+            </td>
+            <td class="desc">マネーフォワード連携。IMPORTRANGEでデータ統合・取引先別ランキング・前年比の算出。売上管理表として本番稼働中。</td>
+            <td class="status-cell"><span class="badge s-running">🚀 本番稼働中</span>
+              <div class="last-update">更新: 03-11</div>
+            </td>
+            <td class="action">保守・問題があれば修正</td>
+            <td class="owner">大蔵卿</td>
+          </tr>
+
+          <tr data-status="s-wip" data-date="2026-03-09" data-text="receipt amazon 領収書 ダウンロード">
+            <td class="num">12</td>
+            <td class="pname">Amazon領収書DL<div class="folder">Receipt_Downloader/</div>
+              <div class="links"><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Receipt_Downloader')">📂
+                  フォルダ</span></div>
+            </td>
+            <td class="desc">Amazonで会社カード購入の領収書PDFを自動でGoogleドライブに保存。経費処理の手間を大幅削減。</td>
+            <td class="status-cell"><span class="badge s-wip">🔄 実装中</span>
+              <div class="last-update">更新: 03-09</div>
+            </td>
+            <td class="action">ラララが実運用テスト → 問題なければ本番開始</td>
+            <td class="owner">大蔵卿</td>
+          </tr>
+
+          <tr data-status="s-ready" data-date="2026-03-09" data-text="scan ocr レシート 自動仕訳 税理士">
+            <td class="num">13</td>
+            <td class="pname">OCR経費自動仕訳<div class="folder">scan/</div>
+              <div class="links"><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\scan')">📂 フォルダ</span>
+              </div>
+            </td>
+            <td class="desc">ScanSnapで撮影したレシートをOCRで読み取り、自動仕訳・スプレッドシートに記録。税理士提出書類を自動化。</td>
+            <td class="status-cell"><span class="badge s-ready">🔧 ほぼ完成</span>
+              <div class="last-update">更新: 03-09</div>
+            </td>
+            <td class="action">残作業の確認・最終調整</td>
+            <td class="owner">大蔵卿</td>
+          </tr>
+
+          <tr data-status="s-done" data-date="2026-03-06" data-text="timecard タイムカード 出勤 勤怠">
+            <td class="num">14</td>
+            <td class="pname">出勤簿（タイムカード）<div class="folder">timecard/</div>
+              <div class="links"><a class="link-btn link-sheet"
+                  href="https://docs.google.com/spreadsheets/d/1vXVUAv-6CCDVbmzxc3bPB5uwHjOH7Ut7PW2yOKSo_p8/edit?gid=901460464#gid=901460464"
+                  target="_blank">📊 タイムカードスプシ</a><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\timecard')">📂 フォルダ</span>
+              </div>
+            </td>
+            <td class="desc">ラララちゃんの簡易出勤簿をモダンUIに改良。ワンクリックで打刻できる仕組み。月末自動調整も実現済み。</td>
+            <td class="status-cell"><span class="badge s-done">✅ 完了</span>
+              <div class="last-update">更新: 03-06</div>
+            </td>
+            <td class="action">保守・問題があれば修正</td>
+            <td class="owner">大蔵卿</td>
+          </tr>
+
+        </tbody>
+      </table>
+
+      <!-- 諜報院 -->
+      <div class="section-header">🕵️ 諜報院</div>
+      <table>
+        <thead>
+          <tr>
+            <th class="num">#</th>
+            <th>プロジェクト名</th>
+            <th>概要</th>
+            <th>ステータス／更新日</th>
+            <th>次のアクション</th>
+            <th>担当</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr data-status="s-running" data-date="2026-03-18" data-text="ai ニュース 巡回 twitter x">
+            <td class="num">15</td>
+            <td class="pname">AIニュース巡回<div class="folder">Twitter/</div>
+              <div class="links"><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Twitter')">📂 フォルダ</span>
+              </div>
+            </td>
+            <td class="desc">XのAI関連アカウントを毎朝定期巡回。最新AI情報をmdにまとめる。Gemini Flash使用。1日1回まで。</td>
+            <td class="status-cell"><span class="badge s-running">🚀 稼働中</span>
+              <div class="last-update">更新: 03-18</div>
+            </td>
+            <td class="action">毎朝「巡回して」で実行（朝1回ルール）</td>
+            <td class="owner">工作局長</td>
+          </tr>
+
+          <tr data-status="s-running" data-date="2026-03-11"
+            data-text="gws cli google workspace drive gmail calendar sheets">
+            <td class="num">16</td>
+            <td class="pname">gws MCP連携<div class="folder">gws_CLI/</div>
+              <div class="links"><a class="link-btn link-sheet"
+                  href="https://docs.google.com/spreadsheets/d/1ZcLkGowAGTBkh_cizmWa55nZ4UKt3HKUvkjdZXz8gos/"
+                  target="_blank">📊 進捗スプシ</a><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\gws_CLI')">📂 フォルダ</span>
+              </div>
+            </td>
+            <td class="desc">Google Workspace CLIをAntigravityのMCPサーバーとして接続。Drive・スプシ・Gmail等を直接操作できる環境。</td>
+            <td class="status-cell"><span class="badge s-running">🚀 稼働中</span>
+              <div class="last-update">更新: 03-11</div>
+            </td>
+            <td class="action">Antigravity再起動後に動作確認</td>
+            <td class="owner">諜報卿</td>
+          </tr>
+
+          <tr data-status="s-done" data-date="2026-03-10" data-text="sdp site スターダストプレス web サイト">
+            <td class="num">17</td>
+            <td class="pname">スターダストプレスWebサイト<div class="folder">SDP_site/</div>
+              <div class="links"><a class="link-btn link-html" href="https://www.stardust-pr.jp/" target="_blank">🌐 サイト</a><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\SDP_site')">📂 フォルダ</span>
+              </div>
+            </td>
+            <td class="desc">自社ウェブサイト制作。グラちゃんと一緒に作成。モバイル・レスポンシブ対応・UIアニメーション。</td>
+            <td class="status-cell"><span class="badge s-done">✅ 完了</span>
+              <div class="last-update">更新: 03-10</div>
+            </td>
+            <td class="action">更新・改修が必要になったら着手</td>
+            <td class="owner">広報局長</td>
+          </tr>
+
+          <tr data-status="s-running" data-date="2026-03-21" data-text="line タスク 管理 gas webhook 諜報院 line局 公式アカウント">
+            <td class="num">18</td>
+            <td class="pname">LINE局（LINEタスク管理）<div class="folder">諜報院/LINE局/</div>
+              <div class="links">
+                <a class="link-btn link-gas" href="https://script.google.com/u/0/home/projects/1OV2chmBPc2zWJXy0cT3GLF20Camlb-IGII2PAW_CO01nyGDRPHipsTor/edit" target="_blank">⚙️ GAS編集</a>
+                <a class="link-btn link-sheet" href="https://developers.line.biz/ja/" target="_blank">📲 LINE Dev</a>
+                <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\諜報院\\LINE局')">📂 フォルダ</span>
+              </div>
+            </td>
+            <td class="desc">LINEに送るだけでタスク・案件・経費を自動仕分け・保存。毎朝8時通知。GAS+Claude API+スプシ構成。<br>📌 03-22大改修：メモ機能廃止・丸数字①②③表示・一括完了・削除コマンド・ヘルプ全面刷新・スクリプトプロパティ化。</td>
+            <td class="status-cell"><span class="badge s-running">🚀 本番稼働中</span>
+              <div class="last-update">更新: 03-22</div>
+            </td>
+            <td class="action">保守・問題があれば報告｜Claude API連携・Googleカレンダー連携は拡張予定</td>
+            <td class="owner">LINE局長</td>
+          </tr>
+
+          <tr data-status="s-done" data-date="2026-03-19" data-text="sample site サンプルサイト イベント パチンコ 広報局長 seven rush web制作">
+            <td class="num">19</td>
+            <td class="pname">サンプルサイト（Web制作）<div class="folder">サンプルサイト/</div><div class="links"><a class="link-btn link-html" href="../サンプルサイト/index.html" target="_blank">🚀 サンプル</a><span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\サンプルサイト')">📂 フォルダ</span></div></td>
+            <td class="desc">パチンコ・イベント告知型Webサイトの営業用サンプル。seven-rush777.com相当。シルバー×赤・GASスプシ連携・スケジュール絞り込み検索。知り合い価格60〜80万+月3〜5万。</td>
+            <td class="status-cell"><span class="badge s-done">✅ 完了</span><div class="last-update">更新: 03-19</div></td>
+            <td class="action">Vercelで公開→営業用URL発行｜キャスト写真差し替え｜フォームGAS接続</td>
+            <td class="owner">広報局長</td>
+          </tr>
+
+        </tbody>
+      </table>
+
+
+      <!-- 回胴院 -->
+      <div class="section-header">🎰 回胴院（パチンコ業界ビジネス）</div>
+      <table>
+        <thead>
+          <tr>
+            <th class="num">#</th>
+            <th>プロジェクト名</th>
+            <th>概要</th>
+            <th>ステータス／更新日</th>
+            <th>次のアクション</th>
+            <th>担当</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr data-status="s-done" data-date="2026-03-13" data-text="enja 演者 診断 パチンコ フォロワー インプ">
+            <td class="num">20</td>
+            <td class="pname">演者診断ツール<div class="folder">P/enja_tool/</div>
+              <div class="links"><a class="link-btn link-gas"
+                  href="https://script.google.com/macros/s/AKfycbxzhX2ePbL6ydhD1KmQ-n_twoHA5oI7UVV5dNsUhVNZaMEl-HAYCx4AMZrzgGLmbWMAFA/exec"
+                  target="_blank">⚙️ GASアプリ</a><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\P\\enja_tool')">📂
+                  フォルダ</span></div>
+            </td>
+            <td class="desc">パチンコ来店演者の適正価格をXフォロワー数・インプから診断するWebツール。GASデプロイ済み・スプシ記録あり。</td>
+            <td class="status-cell"><span class="badge s-done">✅ デプロイ済み</span>
+              <div class="last-update">更新: 03-13</div>
+            </td>
+            <td class="action">スプシ記録動作確認・ガチリリース判断</td>
+            <td class="owner">演者局長</td>
+          </tr>
+
+          <tr data-status="s-wip" data-date="2026-03-14" data-text="bigboss big boss twitter 投稿 自動 foxfoxslot 须崎">
+            <td class="num">21</td>
+            <td class="pname">BIG BOSS投稿ツール<div class="folder">P/bigboss_tool/</div>
+              <div class="links"><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\P\\bigboss_tool')">📂
+                  フォルダ</span></div>
+            </td>
+            <td class="desc">パチンコインフルエンサー「BIG BOSS」向けTwitter投稿自動生成ツール。GASデプロイ済。须崎くんデモ済み。</td>
+            <td class="status-cell"><span class="badge s-wip">🔄 進行中</span>
+              <div class="last-update">更新: 03-14</div>
+            </td>
+            <td class="action">Claude APIサンプルツイート生成 → 须崎くんへ精度を見せる</td>
+            <td class="owner">自動投稿局長</td>
+          </tr>
+
+          <tr data-status="s-wip" data-date="2026-03-18" data-text="calendar イベント管理 line claude api google calendar 须崎">
+            <td class="num">22</td>
+            <td class="pname">イベント管理システム<div class="folder">P/Calendar/</div>
+              <div class="links"><span class="link-folder"
+                  onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\P\\Calendar')">📂
+                  フォルダ</span></div>
+            </td>
+            <td class="desc">须崎くん（Re.smile.SP）向け。LINEテキスト→Claude API解析→Googleカレンダー＋売上集計。Phase1実装中。</td>
+            <td class="status-cell"><span class="badge s-wip">🔄 Phase1実装中</span>
+              <div class="last-update">更新: 03-18</div>
+            </td>
+            <td class="action">须崎くんのLINEサンプル取得 → 局長スレッドで実装</td>
+            <td class="owner">カレンダー局長</td>
+          </tr>
+
+          <tr data-status="s-done" data-date="2026-03-22" data-text="抽選 当選番号 かいもん広場 フェイス橋原 netlify html 回胴院">
+            <td class="num">25</td>
+            <td class="pname">かいもん広場 抽選ツール<div class="folder">P/抽選ツール/</div>
+              <div class="links">
+                <a class="link-btn link-html" href="https://kaimon-hiroba-chusen.netlify.app/" target="_blank">🎲 Netlify公開</a>
+                <a class="link-btn link-html" href="../P/抽選ツール/index.html" target="_blank">💻 ローカル</a>
+                <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\P\\抽選ツール')">📂 フォルダ</span>
+              </div>
+            </td>
+            <td class="desc">フェイス860橿原「かいもん広場」イベント向け当選番号自動抽選ツール。総枚数・当たり数入力→昇順ソートグリッド表示。番号タップで取り消し線・localStorage自動保存・豆知識ボタン15種・全チェック完了バナー・Netlify公開済み。fortune-numbers（30万円）対比コスト：0円。</td>
+            <td class="status-cell"><span class="badge s-done">✅ 完成・公開済</span>
+              <div class="last-update">更新: 03-22</div>
+            </td>
+            <td class="action">プリンター連携版検討（MUNBYN 14,000円）｜須嵎くん・他店舗への横展開</td>
+            <td class="owner">回胴院局長</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div><!-- /main -->
+  </div><!-- /tab-projects -->
+
+  <!-- ===== TAB 2: 重要スケジュール ===== -->
+  <div id="tab-schedule" class="tab-panel">
+    <div class="main">
+      <div class="section-header">📅 重要マイルストーン（2026年）</div>
+      <a class="link-btn link-sheet"
+        href="https://docs.google.com/spreadsheets/d/1ZcLkGowAGTBkh_cizmWa55nZ4UKt3HKUvkjdZXz8gos/edit#gid=1"
+        target="_blank" style="display:inline-flex;margin-bottom:12px;">📊 スプシで開く</a>
+      <table class="sched-table">
+        <thead>
+          <tr>
+            <th>時期</th>
+            <th>マイルストーン</th>
+            <th>詳細・補足</th>
+            <th>ステータス</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2026年3〜4月</td>
+            <td>TB引継書 資料作成開始</td>
+            <td>まずGA自動レポートGAS化から着手。楽になってから引き継ぐ方針</td>
+            <td><span class="badge s-todo">● 未着手</span></td>
+          </tr>
+          <tr>
+            <td>2026年5月</td>
+            <td>🟡 TB引継書 全資料完成目標</td>
+            <td>イベント繁忙期前に完成させる</td>
+            <td><span class="badge s-todo">● 未着手</span></td>
+          </tr>
+          <tr>
+            <td>2026年5月</td>
+            <td>⚡ イベント繁忙期</td>
+            <td>この前後でシステム整備を進める</td>
+            <td><span class="badge s-annual">● 毎年恒例</span></td>
+          </tr>
+          <tr>
+            <td>2026年7月末</td>
+            <td>TB引き継ぎ完了</td>
+            <td>引き継ぎ先への説明・確認まで完了</td>
+            <td><span class="badge s-todo">● 未着手</span></td>
+          </tr>
+          <tr>
+            <td>2026年8月</td>
+            <td>⚡ イベント繁忙期</td>
+            <td>この前後でシステム整備を進める</td>
+            <td><span class="badge s-annual">● 毎年恒例</span></td>
+          </tr>
+          <tr style="background:#FFF0F0">
+            <td>2026年9月末</td>
+            <td>🚨 TB契約終了（早期終了の可能性あり）</td>
+            <td>110万の穴が空く。LLMOまたは新規営業で補填が必要。Office・Adobe等のツールも使えなくなる</td>
+            <td><span class="badge s-alert">⚠️ 要注意</span></td>
+          </tr>
+          <tr>
+            <td>2026年10月〜</td>
+            <td>TB縛りなし・自由営業開始</td>
+            <td>競合会社への営業が解禁。自動化システムが業務を回している状態を目指す</td>
+            <td><span class="badge s-plan">● 計画中</span></td>
+          </tr>
+          <tr>
+            <td>LLMO決定次第</td>
+            <td>note発信開始</td>
+            <td>✅ LLMO待たず始動済み（2026-03-17）前後編4ファイル完成・投稿判断待ち</td>
+            <td><span class="badge s-started">🔥 始動済み</span></td>
+          </tr>
+          <tr>
+            <td>随時</td>
+            <td>Adobe代替サービス調査</td>
+            <td>TB終了前に調査・移行完了させる。Photoshop・Illustratorの代替</td>
+            <td><span class="badge s-todo">● 未着手</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== TAB 3: 3ヶ月以内にやること ===== -->
+  <div id="tab-todo" class="tab-panel">
+    <div class="main">
+      <div class="section-header">💡 3ヶ月以内にやること</div>
+      <a class="link-btn link-sheet"
+        href="https://docs.google.com/spreadsheets/d/1ZcLkGowAGTBkh_cizmWa55nZ4UKt3HKUvkjdZXz8gos/edit#gid=2"
+        target="_blank" style="display:inline-flex;margin-bottom:12px;">📊 スプシで開く</a>
+      <table>
+        <thead>
+          <tr>
+            <th>アイデア</th>
+            <th>概要・目的</th>
+            <th>優先度</th>
+            <th>トリガー</th>
+            <th>関連PJ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pname">note発信開始</td>
+            <td class="desc">AI×業務効率化のひとり社長向け発信。下書き4本完成。投稿判断待ち。</td>
+            <td><span class="pri-high">🔴 高</span></td>
+            <td class="action">始動済み</td>
+            <td><span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\rararara_Clone')">rararara_Clone</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="pname">LLMO代理店本格展開</td>
+            <td class="desc">パチンコ業界から他業界への展開。代理店申し込み済み（100万円で交渉中）。先方からの返事待ち。</td>
+            <td><span class="pri-high">🔴 高</span></td>
+            <td class="action">先方からの返事次第</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="pname">Adobe代替サービス調査</td>
+            <td class="desc">TB終了後に使えなくなるPhotoshop・Illustratorの代替。主な用途：画像切り抜き・印刷用。</td>
+            <td><span class="pri-mid">🟡 中</span></td>
+            <td class="action">TB終了3ヶ月前まで</td>
+            <td><span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\TB_Handover')">TB_Handover</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="pname">Genspark深活用</td>
+            <td class="desc">機能の1/10しか使えていない。企画書作成・調査・グラちゃんとの連携活用を探る。</td>
+            <td><span class="pri-low">🟢 低</span></td>
+            <td class="action">余裕ができたら</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="pname">NotebookLM深活用</td>
+            <td class="desc">TB議事録・説明書の検索に使用中。真の使い方（ノートブック連携等）を探る。</td>
+            <td><span class="pri-low">🟢 低</span></td>
+            <td class="action">余裕ができたら</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="pname">AI部署体制（本格化）</td>
+            <td class="desc">ロビーグラちゃんを将軍的に、各担当グラちゃんが専門業務を担当する組織体制。</td>
+            <td><span class="pri-low">🟢 低</span></td>
+            <td class="action">業務量が増えてから</td>
+            <td><span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Zatsudan')">Zatsudan</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="pname">Obsidian + MCP連携</td>
+            <td class="desc">ObsidianをグラちゃんのMCP経由で読み書きし、CLAUDE.mdを超えた「生きた知識ベース」を構築。</td>
+            <td><span class="pri-low">🟢 低</span></td>
+            <td class="action">AI部署体制本格化の時</td>
+            <td><span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Zatsudan')">Zatsudan</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== TAB 4: 完成品一覧 ===== -->
+  <div id="tab-gallery" class="tab-panel">
+    <div class="main">
+
+      <div class="cat-header">🌐 Webツール（HTML単体・ローカル起動）</div>
+      <div class="gallery">
+
+        <div class="card">
+          <div class="card-header">
+            <h3>🗾 天下統一ログ</h3>
+            <div class="card-type">HTML可視化ツール</div>
+          </div>
+          <div class="card-body">
+            <div class="desc">Googleロケーション履歴JSONを可視化。グリッド制覇・都道府県制覇・ヒートマップ3モード。JSONドロップで即動作。</div>
+            <div class="price-box"><span class="price-portfolio">🎨 ポートフォリオ・デモ用</span></div>
+            <div class="card-actions">
+              <a class="link-btn link-html" href="../秘書院/HTML発信局/天下統一ログ/天下統一ログ.html" target="_blank">🚀 ツールを開く</a>
+              <span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\秘書院\\HTML発信局\\天下統一ログ')">📂
+                フォルダ</span>
+            </div>
+            <div class="card-date">作成: 2026-03-17 ／ Leaflet.js + 国土地理院タイル</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>💩 UNKO ANALYTICS</h3>
+            <div class="card-type">HTMLエンタメツール</div>
+          </div>
+          <div class="card-body">
+            <div class="desc">47都道府県×食文化補正のうんこ総量計算。ランダム比較ボタン(東京タワー・ゾウ・猪木・クッパ等)。東京ドーム段階別コメント。</div>
+            <div class="price-box"><span class="price-portfolio">🎨 ポートフォリオ・バズ狙い</span></div>
+            <div class="card-actions">
+              <a class="link-btn link-html" href="../秘書院/HTML発信局/UNKO_ANALYTICS/UNKO_ANALYTICS.html" target="_blank">🚀
+                ツールを開く</a>
+              <span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\秘書院\\HTML発信局\\UNKO_ANALYTICS')">📂
+                フォルダ</span>
+            </div>
+            <div class="card-date">作成: 2026-03-17 ／ Netlify公開判断待ち</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>📆 かいもんひろばカレンダー</h3>
+            <div class="card-type">HTMLシミュレーター</div>
+          </div>
+          <div class="card-body">
+            <div class="desc">イベントスケジュールと売上シミュレーション。シナリオ保存・複数シナリオ比較表・ドラッグ並び替え・localStorage永続化。</div>
+            <div class="price-box"><span class="price-tag">💴 初期 5〜15万円</span><span class="price-custom">🔧
+                業種カスタム</span></div>
+            <div class="card-actions">
+              <a class="link-btn link-html" href="../秘書院/HTML発信局/かいもんひろば_カレンダー/かいもんひろば_カレンダー.html" target="_blank">🚀
+                ツールを開く</a>
+              <span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\秘書院\\HTML発信局\\かいもんひろば_カレンダー')">📂
+                ローカル</span>
+              <span class="link-folder" onclick="copyPath('G:\\マイドライブ\\かいもんひろば\\イベントカレンダー｜ベガスガス大東')">☁️ JSON格納先</span>
+            </div>
+            <div class="card-date">作成: 2026-03-16 ／ 改良中 ／ JSON: Gドライブ/かいもんひろば/イベントカレンダー｜ベガスガス大東</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>✉️ メールジェネレーター</h3>
+            <div class="card-type">HTMLツール（GAS連携）</div>
+          </div>
+          <div class="card-body">
+            <div class="desc">文体・口調を学習したパーソナルメール生成ツール。業種・企業の文体に合わせてカスタマイズ可能。案件情報を入力→文体再現メールを出力。</div>
+            <div class="price-box"><span class="price-tag">💴 初期 3〜10万円</span><span class="price-monthly">📅 月額
+                1〜2万円</span></div>
+            <div class="card-actions">
+              <a class="link-btn link-html" href="../rararara_Clone/ラララメールジェネレーター.html" target="_blank">🚀 ツールを開く</a>
+              <span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\rararara_Clone')">📂
+                フォルダ</span>
+            </div>
+            <div class="card-date">作成: 2026-03-08 ／ Phase1完了・実運用テスト待ち</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>📅 進捗ダッシュボード</h3>
+            <div class="card-type">HTMLダッシュボード</div>
+          </div>
+          <div class="card-body">
+            <div class="desc">プロジェクトの進捗を一覧管理。検索・ステータスフィルター・放置チェック・フォルダパスコピー・完成品一覧タブ付き。</div>
+            <div class="price-box"><span class="price-tag">💴 初期 2〜8万円</span><span class="price-custom">🔧 業種カスタム</span>
+            </div>
+            <div class="card-actions">
+              <span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Zatsudan')">📂 フォルダ</span>
+            </div>
+            <div class="card-date">作成: 2026-03-18 ／ グラちゃん管理・随時更新</div>
+          </div>
+        </div>
+
+      </div><!-- /gallery html -->
+
+      <div class="cat-header">⚙️ GAS・LINE業務自動化ツール</div>
+      <div class="gallery">
+
+        <div class="card">
+          <div class="card-header">
+            <h3>📲 LINE業務管理システム</h3>
+            <div class="card-type">LINE Bot（GAS + Messaging API）</div>
+          </div>
+          <div class="card-body">
+            <div class="desc">LINEに記号付きで送るだけでタスク・案件・経費・メモを自動仕分け・スプシ保存。毎朝8時サマリー通知。月コスト¥0。本番稼働中。</div>
+            <div class="price-box"><span class="price-tag">💴 初期 5〜15万円</span><span class="price-monthly">📅 月額 1〜3万円</span></div>
+            <div class="card-actions">
+              <a class="link-btn link-html" href="https://docs.google.com/spreadsheets/d/1uLBkytaFJOkwtVky-wBRo8NZwoJVHBcvMQ-RPWvR0vk" target="_blank">📊 スプシを開く</a>
+              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\諜報院\\LINE局')">📂 フォルダ</span>
+            </div>
+            <div class="card-date">作成: 2026-03-19 ／ 本番稼働中（@768dzwxk）｜Claude API連携・Googleカレンダー連携は拡張予定</div>
+          </div>
+        </div>
+
+      </div><!-- /gallery gas -->
+
+
+      <div class="cat-header">🌐 公開済みWebツール（URL直リンク）</div>
+      <div class="gallery">
+
+        <div class="card">
+          <div class="card-header">
+            <h3>📋 イベント確認書</h3>
+            <div class="card-type">HTML公開サイト（Netlify）</div>
+          </div>
+          <div class="card-body">
+            <div class="desc">店舗向けイベント確認書。折りたたみ・チェックリスト・画像埋め込み対応。Netlifyで公開済み。URLをLINEで送るだけで使える。</div>
+            <div class="price-box"><span class="price-tag">💴 初期 3〜8万円</span><span class="price-custom">🔧 業種カスタム</span>
+            </div>
+            <div class="card-actions">
+              <a class="link-btn link-html" href="https://soft-caramel-cd02b2.netlify.app" target="_blank">🌐
+                公開サイトを開く</a>
+              <span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\秘書院\\HTML発信局\\イベント確認書')">📂
+                フォルダ</span>
+            </div>
+            <div class="card-date">作成: 2026-03-15 ／ soft-caramel-cd02b2.netlify.app</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>🎰 演者診断ツール</h3>
+            <div class="card-type">GASアプリ（URL公開）</div>
+          </div>
+          <div class="card-body">
+            <div class="desc">パチンコ来店演者の適正価格をXフォロワー数・インプから診断。GASデプロイ済み・スプシ記録あり。</div>
+            <div class="price-box"><span class="price-tag">💴 初期 5〜15万円</span><span class="price-custom">🔧
+                業種特化カスタム</span></div>
+            <div class="card-actions">
+              <a class="link-btn link-gas"
+                href="https://script.google.com/macros/s/AKfycbxzhX2ePbL6ydhD1KmQ-n_twoHA5oI7UVV5dNsUhVNZaMEl-HAYCx4AMZrzgGLmbWMAFA/exec"
+                target="_blank">⚙️ GASアプリを開く</a>
+              <span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\P\\enja_tool')">📂
+                フォルダ</span>
+            </div>
+            <div class="card-date">作成: 2026-03-13 ／ スプシ記録動作確認待ち</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>🐦 SNS投稿自動生成ツール</h3>
+            <div class="card-type">GASアプリ（URL公開）</div>
+          </div>
+          <div class="card-body">
+            <div class="desc">業種・キャラに合わせた文体でSNS投稿を自動生成。テンプレート選択→ワンクリック生成。Claude AI連携でリアル文章生成も可能。</div>
+            <div class="price-box"><span class="price-tag">💴 初期 5〜15万円</span><span class="price-monthly">📅 月額
+                1〜3万円</span></div>
+            <div class="card-actions">
+              <span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\P\\bigboss_tool')">📂
+                フォルダ（GAS URL確認）</span>
+            </div>
+            <div class="card-date">作成: 2026-03-14 ／ Claude API統合進行中</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>🌐 コーポレートWebサイト</h3>
+            <div class="card-type">Webサイト制作</div>
+          </div>
+          <div class="card-body">
+            <div class="desc">モバイルレスポンシブ対応・UIアニメーション・SEO設計済みのコーポレートサイト。スターダストプレス自社サイトが実績サンプル。</div>
+            <div class="price-box"><span class="price-tag">💴 初期 20〜50万円</span></div>
+            <div class="card-actions">
+              <a class="link-btn link-html" href="https://www.stardust-pr.jp/" target="_blank">🚀 サイトを開く</a>
+              <span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\SDP_site')">📂 フォルダ</span>
+            </div>
+            <div class="card-date">作成: 2026-02-26 ／ 自社サイトが実績サンプル</div>
+          </div>
+        </div>
+
+      
+        <div class="card">
+          <div class="card-header">
+            <h3>🎰 イベント告知サイト（サンプル）</h3>
+            <div class="card-type">Webサイト制作（イベント告知型）</div>
+          </div>
+          <div class="card-body">
+            <div class="desc">パチンコ・イベント告知型Webサイトの営業用デモ。TOP・スケジュール（4軸絞り込み・あいまい検索）・キャスト18名。JSON+JS動的表示・GASスプシ連携対応設計。シルバー×赤デザイン。</div>
+            <div class="price-box"><span class="price-tag">💴 初期 60〜80万円</span><span class="price-monthly">📅 月額 3〜5万円</span></div>
+            <div class="card-actions">
+              <a class="link-btn link-html" href="../サンプルサイト/index.html" target="_blank">🚀 サンプルを開く</a>
+              <span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\サンプルサイト')">📂 フォルダ</span>
+            </div>
+            <div class="card-date">作成: 2026-03-19 ／ Vercel公開待ち → 営業用URL発行予定</div>
+          </div>
+        </div>
+</div><!-- /gallery public -->
+
+      <div class="cat-header">🖥️ ローカルアプリ・ツール（起動ファイルあり）</div>
+      <div class="gallery">
+
+        <div class="card">
+          <div class="card-header">
+            <h3>🎤 Voice 音声入力ツール</h3>
+            <div class="card-type">Chrome音声入力ツール（.bat起動）</div>
+          </div>
+          <div class="card-body">
+            <div class="desc">Windows標準IMEより精度の高い音声入力ツール。Pythonローカルサーバー経由でマイク許可を永続化。定型文クリック挿入機能付き。</div>
+            <div class="price-box"><span class="price-tag">💴 初期 1〜3万円</span></div>
+            <div class="card-actions">
+              <a class="link-btn link-html" href="http://localhost:8765/voice.html" target="_blank">🎤 起動後に開く</a>
+              <span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Voice\\音声入力_起動.bat')">📋
+                .batパスをコピー</span>
+              <span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Voice')">📂 フォルダ</span>
+            </div>
+            <div class="card-date">作成: 2026-03-15 ／ 先に.bat起動→その後http://localhost:8765/voice.htmlを開く</div>
+          </div>
+        </div>
+
+      </div><!-- /gallery local -->
+
+      <div class="cat-header">⚙️ 業務自動化システム（GAS）</div>
+      <div class="gallery">
+
+        <div class="card">
+          <div class="card-header">
+            <h3>💰 売上管理システム</h3>
+            <div class="card-type">GASサイドバー・ダイアログ群</div>
+          </div>
+          <div class="card-body">
+            <div class="desc">マネーフォワード連携の売上管理スプシ。請求書作成・入金管理・取引先別ランキング・前年比。月次レポート自動化。</div>
+            <div class="price-box"><span class="price-tag">💴 初期 10〜30万円</span><span class="price-monthly">📅 保守
+                1〜3万円/月</span></div>
+            <div class="card-actions">
+              <a class="link-btn link-sheet"
+                href="https://docs.google.com/spreadsheets/d/1stZZ1XUZl2eg_-kzm3_WUjhvVnU7HvISBBwT0GJkFZo/edit?gid=1099615191#gid=1099615191"
+                target="_blank">📊 売上管理表を開く</a>
+              <span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\MF2')">📂 フォルダ</span>
+            </div>
+            <div class="card-date">作成: 2026-03-06 ／ 本番稼働中</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>🕐 勤怠管理システム</h3>
+            <div class="card-type">GASサイドバー</div>
+          </div>
+          <div class="card-body">
+            <div class="desc">Googleスプレッドシート連携の勤怠管理。ワンクリック打刻・月末自動調整・残業計算。追加費用なしでスモールチームに最適。</div>
+            <div class="price-box"><span class="price-tag">💴 初期 3〜8万円</span></div>
+            <div class="card-actions">
+              <a class="link-btn link-sheet"
+                href="https://docs.google.com/spreadsheets/d/1vXVUAv-6CCDVbmzxc3bPB5uwHjOH7Ut7PW2yOKSo_p8/edit?gid=901460464#gid=901460464"
+                target="_blank">📊 タイムカードスプシを開く</a>
+              <span class="link-folder"
+                onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\timecard')">📂 フォルダ</span>
+            </div>
+            <div class="card-date">作成: 2026-03-06 ／ 本番稼働中</div>
+          </div>
+        </div>
+
+      </div><!-- /gallery gas -->
+
+      <p style="margin-top:16px;font-size:0.78rem;color:#A08060;">💡 価格はすべて知り合い価格・カスタム内容により変動します。セット購入・複数ツール組み合わせは別途相談。
+      </p>
+
+    </div><!-- /main -->
+  </div><!-- /tab-gallery -->
+
+  <div class="copy-msg" id="copyMsg">📋 パスをコピーしました！</div>
+  <footer>🌟 スターダストプレス 進捗ダッシュボード ／ グラちゃん管理 ／ 最終更新：2026-03-19</footer>
+
+  <script>
+    const TODAY = new Date('2026-03-18');
+    let currentFilter = 'all';
+
+    function daysSince(dateStr) {
+      const d = new Date(dateStr);
+      return Math.floor((TODAY - d) / 86400000);
+    }
+
+    function switchTab(name, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function setFilter(status, btn) {
+      currentFilter = status;
+      document.querySelectorAll('#tab-projects .filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      doFilter();
+    }
+
+    function doFilter() {
+      const q = (document.getElementById('search')?.value || '').toLowerCase();
+      const rows = document.querySelectorAll('#tab-projects tbody tr');
+      let count = 0;
+
+      rows.forEach(tr => {
+        const dateStr = tr.dataset.date || '2026-01-01';
+        const days = daysSince(dateStr);
+        const statusCls = tr.dataset.status || '';
+        const text = (tr.dataset.text || '') + tr.innerText.toLowerCase();
+
+        // stale marks
+        if (days >= 14) { tr.classList.add('stale'); }
+        else { tr.classList.remove('stale'); }
+
+        // update date color
+        const lu = tr.querySelector('.last-update');
+        if (lu) {
+          if (days >= 14) lu.classList.add('stale');
+          else lu.classList.remove('stale');
+        }
+
+        let statusMatch = false;
+        if (currentFilter === 'all') statusMatch = true;
+        else if (currentFilter === 'stale7') statusMatch = days >= 7;
+        else if (currentFilter === 'stale14') statusMatch = days >= 14;
+        else statusMatch = statusCls === currentFilter;
+
+        const textMatch = !q || text.includes(q);
+
+        if (statusMatch && textMatch) { tr.classList.remove('hidden'); count++; }
+        else { tr.classList.add('hidden'); }
+      });
+
+      const el = document.getElementById('count');
+      if (el) el.textContent = count;
+    }
+
+    function copyPath(path) {
+      navigator.clipboard.writeText(path).then(() => {
+        const msg = document.getElementById('copyMsg');
+        msg.classList.add('show');
+        setTimeout(() => msg.classList.remove('show'), 2000);
+      });
+    }
+
+    window.onload = () => doFilter();
+  </script>
+</body>
+
+</html>
+
