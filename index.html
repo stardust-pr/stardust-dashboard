@@ -234,6 +234,21 @@
       font-size: 0.82rem;
     }
 
+    .desc-title {
+      display: block;
+      font-weight: bold;
+      color: #3D1C06;
+      font-size: 0.86rem;
+      margin-bottom: 3px;
+    }
+
+    .desc-detail {
+      display: block;
+      color: #7A5038;
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
     .action {
       color: #3E6B2A;
       font-size: 0.8rem;
@@ -1523,7 +1538,32 @@
       });
     }
 
-    window.onload = () => doFilter();
+    function splitDescs() {
+      document.querySelectorAll('td.desc').forEach(td => {
+        const html = td.innerHTML;
+        // <br>タグを除去してテキスト取得
+        const text = td.textContent.trim();
+        const dot = text.indexOf('\u3002'); // 。
+        if (dot !== -1 && dot < text.length - 1) {
+          const title = text.substring(0, dot + 1);
+          const detail = text.substring(dot + 1).trim();
+          // htmlタグ(<b>等)が含まれる場合は元のhtmlを加工
+          if (html.includes('<b>') || html.includes('<br>')) {
+            // タグ含む場合：最初の。の位置で分割
+            const dotIdx = html.indexOf('\u3002');
+            const t = html.substring(0, dotIdx + 1);
+            const d = html.substring(dotIdx + 1).replace(/^<br>/, '').trim();
+            td.innerHTML = '<strong class="desc-title">' + t + '</strong>' +
+              (d ? '<span class="desc-detail">' + d + '</span>' : '');
+          } else {
+            td.innerHTML = '<strong class="desc-title">' + title + '</strong>' +
+              '<span class="desc-detail">' + detail + '</span>';
+          }
+        }
+      });
+    }
+
+    window.onload = () => { doFilter(); splitDescs(); };
   </script>
 
 
