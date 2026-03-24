@@ -459,7 +459,52 @@
       margin-top: 24px;
     }
 
-    /* ===== 完成品一覧カード ===== */
+
+    /* === 価格列 === */
+    .price-col {
+      white-space: nowrap;
+      font-size: 0.75rem;
+      min-width: 130px;
+    }
+    .price-col .price-tag {
+      display: block;
+      background: #FFF3CD;
+      color: #7B5200;
+      border: 1px solid #FFCA28;
+      border-radius: 4px;
+      padding: 2px 6px;
+      margin-bottom: 3px;
+      font-weight: bold;
+    }
+    .price-col .price-monthly {
+      display: block;
+      background: #E3F2FD;
+      color: #1A5276;
+      border: 1px solid #90CAF9;
+      border-radius: 4px;
+      padding: 2px 6px;
+      margin-bottom: 3px;
+    }
+    .price-col .price-custom {
+      display: block;
+      background: #E8F5E9;
+      color: #1B5E20;
+      border: 1px solid #A5D6A7;
+      border-radius: 4px;
+      padding: 2px 6px;
+      margin-bottom: 3px;
+    }
+    .price-col .price-portfolio {
+      display: block;
+      background: #F3E5F5;
+      color: #6A1B9A;
+      border: 1px solid #CE93D8;
+      border-radius: 4px;
+      padding: 2px 6px;
+      margin-bottom: 3px;
+    }
+
+    /* ===== 完成品一覧カード（CSS残骸） =====  */
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -678,6 +723,7 @@
             <th>概要</th>
             <th>ステータス／更新日</th>
             <th>次のアクション</th>
+            <th>💰 価格</th>
             <th>担当</th>
           </tr>
         </thead>
@@ -696,6 +742,7 @@
               <div class="last-update">更新: 03-23</div>
             </td>
             <td class="action">ダッシュボード定着・プロファイル随時更新　<b>🌐外部URL固定化済み</b></td>
+            <td class="price-col"><span class="price-tag">💴 初期 2〜8万円</span><span class="price-custom">🔧 業種カスタム</span></td>
             <td class="owner">ロビーグラちゃん</td>
           </tr>
 
@@ -712,6 +759,7 @@
               <div class="last-update">更新: 03-24</div>
             </td>
             <td class="action">総帥院ツールとして日常使用中</td>
+            <td class="price-col"><span class="price-tag">💴 初期 1〜3万円</span><span class="price-monthly">📅 月額 0円</span></td>
             <td class="owner">総帥グラちゃん</td>
           </tr>
 
@@ -727,6 +775,7 @@
               <div class="last-update">更新: 03-24</div>
             </td>
             <td class="action">納品時に必ず同梱（CLAUDE.mdルール8参照）</td>
+            <td class="price-col"><span class="price-custom">🔧 納品時に必ず同梱</span></td>
             <td class="owner">総帥グラちゃん</td>
           </tr>
 
@@ -742,6 +791,7 @@
               <div class="last-update">更新: 03-24</div>
             </td>
             <td class="action">外向け公開前は必ず /html-code-review を総帥院で実行</td>
+            <td class="price-col"><span class="price-custom">🔧 外向け公開前に必須</span></td>
             <td class="owner">総帥グラちゃん</td>
           </tr>
 
@@ -759,6 +809,7 @@
               <div class="last-update">更新: 03-17</div>
             </td>
             <td class="action">ラララがnote記事（7記事）を書き直して投稿判断</td>
+            <td class="price-col"></td>
             <td class="owner">ロビーグラちゃん</td>
           </tr>
 
@@ -774,6 +825,7 @@
               <div class="last-update">更新: 03-15</div>
             </td>
             <td class="action">奥さんスクショ収集待ち → フェイス860提案書作成</td>
+            <td class="price-col"></td>
             <td class="owner">LLMO卿</td>
           </tr>
 
@@ -790,6 +842,7 @@
               <div class="last-update">更新: 03-22</div>
             </td>
             <td class="action">MacBook Airセットアップ時に活用・局昇格候補（マニュアル販売が見込める時）</td>
+            <td class="price-col"><span class="price-tag">💴 初期 3〜10万円</span><span class="price-custom">🔧 機種・テーマカスタム</span></td>
             <td class="owner">ロビーグラちゃん</td>
           </tr>
 
@@ -806,6 +859,7 @@
             <th>概要</th>
             <th>ステータス／更新日</th>
             <th>次のアクション</th>
+            <th>💰 価格</th>
             <th>担当</th>
           </tr>
         </thead>
@@ -823,6 +877,7 @@
               <div class="last-update">更新: 03-21</div>
             </td>
             <td class="action">GA4月次レポート自動化 着手済み → 動作確認・GWSマニュアル作成へ</td>
+            <td class="price-col"></td>
             <td class="owner">承継局長</td>
           </tr>
 
@@ -838,6 +893,7 @@
               <div class="last-update">更新: 03-08</div>
             </td>
             <td class="action">ラララが実運用テスト → note書き直しで学習データ化</td>
+            <td class="price-col"><span class="price-tag">💴 初期 3〜10万円</span><span class="price-monthly">📅 月額 1〜2万円</span></td>
             <td class="owner">文書局長</td>
           </tr>
 
@@ -854,6 +910,7 @@
               <div class="last-update">更新: 03-17</div>
             </td>
             <td class="action">JSON入手済み・動作確認済み</td>
+            <td class="price-col"><span class="price-portfolio">🎨 ポートフォリオ・デモ用</span></td>
             <td class="owner">HTML発信局長</td>
           </tr>
 
@@ -869,6 +926,7 @@
               <div class="last-update">更新: 03-17</div>
             </td>
             <td class="action">公開するか判断（Netlify等）</td>
+            <td class="price-col"><span class="price-portfolio">🎨 ポートフォリオ・バズ狙い</span></td>
             <td class="owner">うんこ局長</td>
           </tr>
 
@@ -886,6 +944,7 @@
               <div class="last-update">更新: 03-18</div>
             </td>
             <td class="action">局長スレッドで改良進行中</td>
+            <td class="price-col"><span class="price-tag">💴 初期 5〜15万円</span><span class="price-custom">🔧 業種カスタム</span></td>
             <td class="owner">HTML発信局長</td>
           </tr>
 
@@ -902,6 +961,7 @@
               <div class="last-update">更新: 03-15</div>
             </td>
             <td class="action">soft-caramel-cd02b2.netlify.app</td>
+            <td class="price-col"><span class="price-tag">💴 初期 3〜8万円</span><span class="price-custom">🔧 業種カスタム</span></td>
             <td class="owner">HTML発信局長</td>
           </tr>
 
@@ -920,6 +980,7 @@
               <div class="last-update">更新: 03-15</div>
             </td>
             <td class="action">音声入力_起動.batをダブルクリックして起動</td>
+            <td class="price-col"><span class="price-tag">💴 初期 1〜3万円</span></td>
             <td class="owner">文書局長</td>
           </tr>
 
@@ -934,6 +995,7 @@
               <div class="last-update">更新: 03-20</div>
             </td>
             <td class="action">GAS実装（Gmail API + Drive API）→ 添付ファイル自動移行スクリプト作成</td>
+            <td class="price-col"></td>
             <td class="owner">秘書院局長</td>
           </tr>
 
@@ -948,6 +1010,7 @@
               <div class="last-update">更新: 03-21</div>
             </td>
             <td class="action">Notion APIトークン取得（ラララ作業）→ 全ページ分析</td>
+            <td class="price-col"></td>
             <td class="owner">秘書院局長</td>
           </tr>
 
@@ -964,6 +1027,7 @@
             <th>概要</th>
             <th>ステータス／更新日</th>
             <th>次のアクション</th>
+            <th>💰 価格</th>
             <th>担当</th>
           </tr>
         </thead>
@@ -982,6 +1046,7 @@
               <div class="last-update">更新: 03-11</div>
             </td>
             <td class="action">保守・問題があれば修正</td>
+            <td class="price-col"><span class="price-tag">💴 初期 10〜30万円</span><span class="price-monthly">📅 保守 1〜3万円/月</span></td>
             <td class="owner">大蔵卿</td>
           </tr>
 
@@ -997,6 +1062,7 @@
               <div class="last-update">更新: 03-09</div>
             </td>
             <td class="action">ラララが実運用テスト → 問題なければ本番開始</td>
+            <td class="price-col"></td>
             <td class="owner">大蔵卿</td>
           </tr>
 
@@ -1012,6 +1078,7 @@
               <div class="last-update">更新: 03-09</div>
             </td>
             <td class="action">残作業の確認・最終調整</td>
+            <td class="price-col"></td>
             <td class="owner">大蔵卿</td>
           </tr>
 
@@ -1029,6 +1096,7 @@
               <div class="last-update">更新: 03-06</div>
             </td>
             <td class="action">保守・問題があれば修正</td>
+            <td class="price-col"><span class="price-tag">💴 初期 3〜8万円</span></td>
             <td class="owner">大蔵卿</td>
           </tr>
 
@@ -1045,6 +1113,7 @@
             <th>概要</th>
             <th>ステータス／更新日</th>
             <th>次のアクション</th>
+            <th>💰 価格</th>
             <th>担当</th>
           </tr>
         </thead>
@@ -1063,6 +1132,7 @@
               <div class="last-update">更新: 03-18</div>
             </td>
             <td class="action">毎朝「巡回して」で実行（朝1回ルール）</td>
+            <td class="price-col"></td>
             <td class="owner">工作局長</td>
           </tr>
 
@@ -1081,6 +1151,7 @@
               <div class="last-update">更新: 03-11</div>
             </td>
             <td class="action">Antigravity再起動後に動作確認</td>
+            <td class="price-col"></td>
             <td class="owner">諜報卿</td>
           </tr>
 
@@ -1096,6 +1167,7 @@
               <div class="last-update">更新: 03-10</div>
             </td>
             <td class="action">更新・改修が必要になったら着手</td>
+            <td class="price-col"><span class="price-tag">💴 初期 20〜50万円</span></td>
             <td class="owner">広報局長</td>
           </tr>
 
@@ -1113,6 +1185,7 @@
               <div class="last-update">更新: 03-22</div>
             </td>
             <td class="action">保守・問題があれば報告｜Claude API連携・Googleカレンダー連携は拡張予定</td>
+            <td class="price-col"><span class="price-tag">💴 初期 5〜15万円</span><span class="price-monthly">📅 月額 1〜3万円</span></td>
             <td class="owner">LINE局長</td>
           </tr>
 
@@ -1122,6 +1195,7 @@
             <td class="desc">パチンコ・イベント告知型Webサイトの営業用サンプル。seven-rush777.com相当。シルバー×赤・GASスプシ連携・スケジュール絞り込み検索。知り合い価格60〜80万+月3〜5万。</td>
             <td class="status-cell"><span class="badge s-done">✅ 完了</span><div class="last-update">更新: 03-19</div></td>
             <td class="action">Vercelで公開→営業用URL発行｜キャスト写真差し替え｜フォームGAS接続</td>
+            <td class="price-col"><span class="price-tag">💴 初期 60〜80万円</span><span class="price-monthly">📅 月額 3〜5万円</span></td>
             <td class="owner">広報局長</td>
           </tr>
 
@@ -1139,6 +1213,7 @@
             <th>概要</th>
             <th>ステータス／更新日</th>
             <th>次のアクション</th>
+            <th>💰 価格</th>
             <th>担当</th>
           </tr>
         </thead>
@@ -1158,6 +1233,7 @@
               <div class="last-update">更新: 03-13</div>
             </td>
             <td class="action">スプシ記録動作確認・ガチリリース判断</td>
+            <td class="price-col"><span class="price-tag">💴 初期 5〜15万円</span><span class="price-custom">🔧 業種特化カスタム</span></td>
             <td class="owner">演者局長</td>
           </tr>
 
@@ -1174,6 +1250,7 @@
               <div class="last-update">更新: 03-14</div>
             </td>
             <td class="action">Claude APIサンプルツイート生成 → 须崎くんへ精度を見せる</td>
+            <td class="price-col"><span class="price-tag">💴 初期 5〜15万円</span><span class="price-monthly">📅 月額 0円</span></td>
             <td class="owner">自動投稿局長</td>
           </tr>
 
@@ -1189,6 +1266,7 @@
               <div class="last-update">更新: 03-18</div>
             </td>
             <td class="action">须崎くんのLINEサンプル取得 → 局長スレッドで実装</td>
+            <td class="price-col"></td>
             <td class="owner">カレンダー局長</td>
           </tr>
 
@@ -1206,6 +1284,7 @@
               <div class="last-update">更新: 03-22</div>
             </td>
             <td class="action">プリンター連携版検討（MUNBYN 14,000円）｜須嵎くん・他店舗への横展開</td>
+            <td class="price-col"><span class="price-tag">💴 初期 3〜8万円</span><span class="price-custom">🔧 楽市・イベント向け</span></td>
             <td class="owner">回胴院局長</td>
           </tr>
 
@@ -1447,358 +1526,7 @@
     window.onload = () => doFilter();
   </script>
 
-  <!-- ===== TAB 4: 完成品一覧 ===== -->
-  <div id="tab-gallery" class="tab-panel">
-    <div class="main">
 
-      <div class="cat-header">🌐 Webツール（HTML単体・ローカル起動）</div>
-      <div class="gallery">
-
-        <div class="card">
-          <div class="card-header">
-            <h3>🗾 天下統一ログ</h3>
-            <div class="card-type">HTML可視化ツール</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">Googleロケーション履歴JSONを可視化。グリッド制覇・都道府県制覇・ヒートマップ3モード。JSONドロップで即動作。</div>
-            <div class="price-box"><span class="price-portfolio">🎨 ポートフォリオ・デモ用</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-html" href="../秘書院/HTML発信局/天下統一ログ/天下統一ログ.html" target="_blank">🚀 ツールを開く</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\秘書院\\HTML発信局\\天下統一ログ')">📂 フォルダ</span>
-            </div>
-            <div class="card-date">作成: 2026-03-17 ／ Leaflet.js + 国土地理院タイル</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3>💩 UNKO ANALYTICS</h3>
-            <div class="card-type">HTMLエンタメツール</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">47都道府県×食文化補正のうんこ総量計算。ランダム比較ボタン(東京タワー・ゾウ・猪木・クッパ等)。東京ドーム段階別コメント。</div>
-            <div class="price-box"><span class="price-portfolio">🎨 ポートフォリオ・バズ狙い</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-html" href="../秘書院/HTML発信局/UNKO_ANALYTICS/UNKO_ANALYTICS.html" target="_blank">🚀 ツールを開く</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\秘書院\\HTML発信局\\UNKO_ANALYTICS')">📂 フォルダ</span>
-            </div>
-            <div class="card-date">作成: 2026-03-17 ／ Netlify公開判断待ち</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3>📆 かいもんひろばカレンダー</h3>
-            <div class="card-type">HTMLシミュレーター</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">イベントスケジュールと売上シミュレーション。シナリオ保存・複数シナリオ比較表・ドラッグ並び替え・localStorage永続化。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 5〜15万円</span><span class="price-custom">🔧 業種カスタム</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-html" href="../秘書院/HTML発信局/かいもんひろば_カレンダー/かいもんひろば_カレンダー.html" target="_blank">🚀 ツールを開く</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\秘書院\\HTML発信局\\かいもんひろば_カレンダー')">📂 ローカル</span>
-              <span class="link-folder" onclick="copyPath('G:\\マイドライブ\\かいもんひろば\\イベントカレンダー｜ベガスガス大東')">☁️ JSON格納先</span>
-            </div>
-            <div class="card-date">作成: 2026-03-16 ／ 改良中 ／ JSON: Gドライブ/かいもんひろば/イベントカレンダー｜ベガスガス大東</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3>✉️ メールジェネレーター</h3>
-            <div class="card-type">HTMLツール（GAS連携）</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">文体・口調を学習したパーソナルメール生成ツール。業種・企業の文体に合わせてカスタマイズ可能。案件情報を入力→文体再現メールを出力。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 3〜10万円</span><span class="price-monthly">📅 月額 1〜2万円</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-html" href="../rararara_Clone/ラララメールジェネレーター.html" target="_blank">🚀 ツールを開く</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\rararara_Clone')">📂 フォルダ</span>
-            </div>
-            <div class="card-date">作成: 2026-03-08 ／ Phase1完了・実運用テスト待ち</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3>📊 進捗ダッシュボード</h3>
-            <div class="card-type">HTMLダッシュボード（GitHub Pages公開）</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">プロジェクトの進捗を一覧管理。検索・ステータスフィルター・放置チェック・フォルダパスコピー・完成品一覧タブ付き。GitHub Pagesで外部公開中。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 2〜8万円</span><span class="price-custom">🔧 業種カスタム</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-html" href="https://stardust-pr.github.io/stardust-dashboard/" target="_blank">🌐 公開ダッシュボード</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Zatsudan')">📂 フォルダ</span>
-            </div>
-            <div class="card-date">作成: 2026-03-18 ／ 03-23 GitHub Pages外部公開開始。グラちゃんが更新→push自動反映</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3>🍎 Macマニュアル</h3>
-            <div class="card-type">HTMLシングルページツール</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">MacBook Air M5セットアップ用ショートカット・設定集。<b>98項目</b>（YouTubeタイムスタンプリンク付き）・おすすめアクセサリー10選・チェック習得管理・localStorage永続保存。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 3〜10万円</span><span class="price-custom">🔧 機種・テーマカスタム</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-html" href="Macマニュアル/index.html" target="_blank">💻 メニューを開く</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Zatsudan\\Macマニュアル')">📂 フォルダ</span>
-            </div>
-            <div class="card-date">作成: 2026-03-22 ／ 98項目（03-22に32項目追加）／ MacBook Air届いたら実操</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3>📝 グラメモ</h3>
-            <div class="card-type">ローカルHTMLメモエディター（localStorage）</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">ブラウザで動くタブ型メモエディター。太字・赤字・斜体等のリッチテキスト対応（Ctrl+B/I/U/Shift+R）。自動保存・クロスタブ同期。localStorageに永続保存でフリーソフト不要。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 1〜3万円</span><span class="price-monthly">📅 月額 0円</span></div>
-            <div class="card-actions">
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Tools\\グラメモ\\index.html')">📝 パスをコピーして開く</span>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Tools\\グラメモ')">📂 フォルダ</span>
-            </div>
-            <div class="card-date">作成: 2026-03-24 ／ 総帥院ツール ／ クロスタブ自動同期対応</div>
-          </div>
-        </div>
-
-      </div><!-- /gallery html -->
-
-      <div class="cat-header">⚙️ GAS・LINE業務自動化ツール</div>
-      <div class="gallery">
-
-        <div class="card">
-          <div class="card-header">
-            <h3>📲 LINE業務管理システム</h3>
-            <div class="card-type">LINE Bot（GAS + Messaging API）</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">LINEに記号付きで送るだけでタスク・案件・経費・メモを自動仕分け・スプシ保存。毎朝8時サマリー通知。月コスト¥0。本番稼働中。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 5〜15万円</span><span class="price-monthly">📅 月額 1〜3万円</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-html" href="https://docs.google.com/spreadsheets/d/1uLBkytaFJOkwtVky-wBRo8NZwoJVHBcvMQ-RPWvR0vk" target="_blank">📊 スプシを開く</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\諜報院\\LINE局')">📂 フォルダ</span>
-            </div>
-            <div class="card-date">作成: 2026-03-19 ／ 本番稼働中（@768dzwxk）｜Claude API連携・Googleカレンダー連携は拡張予定</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3>💬 Chatwork自動モニタリング</h3>
-            <div class="card-type">GAS連携（Chatwork → Google Chat）</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">ChatworkのメッセージをリアルタイムでGoogle Chatに転送。送信者名自動取得・編集検知（✏️表示）・スクリプトプロパティで秘密情報管理。税理士とのやりとりを40日制限なしで確認可能。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 3〜8万円</span><span class="price-monthly">📅 月額 0円</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-html" href="https://chat.google.com/room/AAQAaWfBEwE" target="_blank">💬 Google Chatで見る</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\MF\\chatwork_to_gchat.gs')">📂 GASファイル</span>
-            </div>
-            <div class="card-date">作成: 2026-03-23 ／ Phase5完成・送信者名自動取得・編集検知対応 ／ Account②待ちでPhase1（過去1年半抽出）予定</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3>🦊 BIG BOSS 結果画像ジェネレーター</h3>
-            <div class="card-type">ローカルHTMLツール（Excel → 投稿画像 + ツイート）</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">パチンコホールのExcelデータをドロップするだけで機種別差枚グラフ・投稿用画像・ツイート文章を自動生成。機種アート画像のマスター登録機能・複数画像の合成・JPEGダウンロードまで一括対応。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 5〜15万円</span><span class="price-monthly">📅 月額 0円</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-html" href="file:///C:/Users/StarDustPress/Desktop/Stardust_Antigravity/P/bigboss_tool/excel_to_poster.html" target="_blank">🛠 ツールを開く</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\P\\bigboss_tool')">📂 フォルダ</span>
-            </div>
-            <div class="card-date">作成: 2026-03-23 ／ β版稼働中 ／ Pision API連携・スランプグラフ追加予定</div>
-          </div>
-        </div>
-
-      </div><!-- /gallery gas -->
-
-      <div class="cat-header">🌐 公開済みWebツール（URL直リンク）</div>
-      <div class="gallery">
-
-        <div class="card">
-          <div class="card-header">
-            <h3>📋 イベント確認書</h3>
-            <div class="card-type">HTML公開サイト（Netlify）</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">店舗向けイベント確認書。折りたたみ・チェックリスト・画像埋め込み対応。Netlifyで公開済み。URLをLINEで送るだけで使える。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 3〜8万円</span><span class="price-custom">🔧 業種カスタム</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-html" href="https://soft-caramel-cd02b2.netlify.app" target="_blank">🌐 公開サイトを開く</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\秘書院\\HTML発信局\\イベント確認書')">📂 フォルダ</span>
-            </div>
-            <div class="card-date">作成: 2026-03-15 ／ soft-caramel-cd02b2.netlify.app</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3>🎰 演者診断ツール</h3>
-            <div class="card-type">GASアプリ（URL公開）</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">パチンコ来店演者の適正価格をXフォロワー数・インプから診断。GASデプロイ済み・スプシ記録あり。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 5〜15万円</span><span class="price-custom">🔧 業種特化カスタム</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-gas" href="https://script.google.com/macros/s/AKfycbxzhX2ePbL6ydhD1KmQ-n_twoHA5oI7UVV5dNsUhVNZaMEl-HAYCx4AMZrzgGLmbWMAFA/exec" target="_blank">⚙️ GASアプリを開く</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\P\\enja_tool')">📂 フォルダ</span>
-            </div>
-            <div class="card-date">作成: 2026-03-13 ／ スプシ記録動作確認待ち</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3>🐦 SNS投稿自動生成ツール</h3>
-            <div class="card-type">GASアプリ（URL公開）</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">業種・キャラに合わせた文体でSNS投稿を自動生成。テンプレート選択→ワンクリック生成。Claude AI連携でリアル文章生成も可能。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 5〜15万円</span><span class="price-monthly">📅 月額 1〜3万円</span></div>
-            <div class="card-actions">
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\P\\bigboss_tool')">📂 フォルダ（GAS URL確認）</span>
-            </div>
-            <div class="card-date">作成: 2026-03-14 ／ Claude API統合進行中</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3>🌐 コーポレートWebサイト</h3>
-            <div class="card-type">Webサイト制作</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">モバイルレスポンシブ対応・UIアニメーション・SEO設計済みのコーポレートサイト。スターダストプレス自社サイトが実績サンプル。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 20〜50万円</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-html" href="https://www.stardust-pr.jp/" target="_blank">🚀 サイトを開く</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\SDP_site')">📂 フォルダ</span>
-            </div>
-            <div class="card-date">作成: 2026-02-26 ／ 自社サイトが実績サンプル</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3>🎰 イベント告知サイト（サンプル）</h3>
-            <div class="card-type">Webサイト制作（イベント告知型）</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">パチンコ・イベント告知型Webサイトの営業用デモ。TOP・スケジュール（4軸絞り込み・あいまい検索）・キャスト18名。JSON+JS動的表示・GASスプシ連携対応設計。シルバー×赤デザイン。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 60〜80万円</span><span class="price-monthly">📅 月額 3〜5万円</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-html" href="../サンプルサイト/index.html" target="_blank">🚀 サンプルを開く</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\サンプルサイト')">📂 フォルダ</span>
-            </div>
-            <div class="card-date">作成: 2026-03-19 ／ Vercel公開待ち → 営業用URL発行予定</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3>🎲 かいもん広場 抽選ツール</h3>
-            <div class="card-type">HTML公開ツール（Netlify）</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">フェイス860橿原「かいもん広場」向け当選番号自動抽選ツール。総枚数・当たり数入力→昇順グリッド表示。番号タップで取り消し線・localStorage保存・豆知識15種・全完了バナー。fortune-numbers（30万円）対比コスト：0円。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 3〜8万円</span><span class="price-custom">🔧 楽市・イベント向け</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-html" href="https://kaimon-hiroba-chusen.netlify.app/" target="_blank">🌐 公開サイト</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\P\\抽選ツール')">📂 フォルダ</span>
-            </div>
-            <div class="card-date">作成: 2026-03-22 ／ kaimon-hiroba-chusen.netlify.app ／ プリンター連携版検討中</div>
-          </div>
-        </div>
-
-      </div><!-- /gallery public -->
-
-      <div class="cat-header">⚙️ 業務自動化システム（GAS）</div>
-      <div class="gallery">
-
-        <div class="card">
-          <div class="card-header">
-            <h3>💰 売上管理システム</h3>
-            <div class="card-type">GASサイドバー・ダイアログ群</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">マネーフォワード連携の売上管理スプシ。請求書作成・入金管理・取引先別ランキング・前年比。月次レポート自動化。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 10〜30万円</span><span class="price-monthly">📅 保守 1〜3万円/月</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-sheet" href="https://docs.google.com/spreadsheets/d/1stZZ1XUZl2eg_-kzm3_WUjhvVnU7HvISBBwT0GJkFZo/edit?gid=1099615191#gid=1099615191" target="_blank">📊 売上管理表を開く</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\MF2')">📂 フォルダ</span>
-            </div>
-            <div class="card-date">作成: 2026-03-06 ／ 本番稼働中</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3>🕐 勤怠管理システム</h3>
-            <div class="card-type">GASサイドバー</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">Googleスプレッドシート連携の勤怠管理。ワンクリック打刻・月末自動調整・残業計算。追加費用なしでスモールチームに最適。</div>
-            <div class="price-box"><span class="price-tag">💴 初期 3〜8万円</span></div>
-            <div class="card-actions">
-              <a class="link-btn link-sheet" href="https://docs.google.com/spreadsheets/d/1vXVUAv-6CCDVbmzxc3bPB5uwHjOH7Ut7PW2yOKSo_p8/edit?gid=901460464#gid=901460464" target="_blank">📊 タイムカードスプシを開く</a>
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\timecard')">📂 フォルダ</span>
-            </div>
-            <div class="card-date">作成: 2026-03-06 ／ 本番稼働中</div>
-          </div>
-        </div>
-
-      </div><!-- /gallery gas -->
-
-      <div class="cat-header">📋 社内運用テンプレート・資料</div>
-      <div class="gallery">
-
-        <div class="card">
-          <div class="card-header">
-            <h3>📄 Service Guide（納品同梱資料）</h3>
-            <div class="card-type">Markdownドキュメント</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">AIツール導入時に必ずお客様へ渡す説明資料。「作っている人・動作環境・データ取り扱い・サポート対応・β版注記」を正直に記載。納品物への同梱必須。</div>
-            <div class="price-box"><span class="price-custom">🔧 納品時に必ず同梱</span></div>
-            <div class="card-actions">
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Zatsudan\\サービス資料\\Service_Guide.md')">📂 ファイルパスをコピー</span>
-            </div>
-            <div class="card-date">作成: 2026-03-24 ／ 総帥チェック後・全納品物に同梱すること</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3>🔍 HTMLコードレビューチェッカー</h3>
-            <div class="card-type">ワークフロー（/html-code-review）</div>
-          </div>
-          <div class="card-body">
-            <div class="desc">局長が作ったHTMLを総帥院が第三者視点でチェックするためのプロンプトテンプレート。構造・CSS・JS・パフォーマンス・セキュリティ・AI生成コードの問題を6カテゴリで洗い出す。外向け納品前に必ず実施。</div>
-            <div class="price-box"><span class="price-custom">🔧 外向け公開前に必須</span></div>
-            <div class="card-actions">
-              <span class="link-folder" onclick="copyPath('C:\\Users\\StarDustPress\\Desktop\\Stardust_Antigravity\\Zatsudan\\.agents\\workflows\\html-code-review.md')">📂 ワークフローファイル</span>
-            </div>
-            <div class="card-date">作成: 2026-03-24 ／ 総帥院で /html-code-review と入力するだけで起動</div>
-          </div>
-        </div>
-
-      </div><!-- /gallery templates -->
-
-      <p style="margin-top:16px;font-size:0.78rem;color:#A08060;">💡 価格はすべて知り合い価格・カスタム内容により変動します。セット購入・複数ツール組み合わせは別途相談。
-      </p>
-
-    </div><!-- /main -->
-  </div><!-- /tab-gallery -->
 
 </body>
 
